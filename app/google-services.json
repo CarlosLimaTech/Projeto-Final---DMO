@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "876232824102",
+    "project_id": "syncchat-20c36",
+    "storage_bucket": "syncchat-20c36.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:876232824102:android:eb94086794918a4c969de7",
+        "android_client_info": {
+          "package_name": "br.edu.ifsp.dmo.syncchat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASH6rSJ2wuMwLzuC4foq4Cfl9WSRKZN7E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
