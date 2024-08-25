@@ -30,5 +30,8 @@
         <!-- Atividade de Conversa -->
         <activity android:name=".view.ConversationActivity" />
 
+        <!-- Atividade de Login -->
+        <activity android:name=".view.LoginActivity" /> <!-- Adicione esta linha -->
+
     </application>
 </manifest>
