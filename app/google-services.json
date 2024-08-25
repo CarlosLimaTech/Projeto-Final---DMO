@@ -1,13 +1,32 @@
 {
   "project_info": {
-    "project_number": "876232824102",
-    "project_id": "syncchat-20c36",
-    "storage_bucket": "syncchat-20c36.appspot.com"
+    "project_number": "106452613030",
+    "project_id": "firestore-faf51",
+    "storage_bucket": "firestore-faf51.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:876232824102:android:eb94086794918a4c969de7",
+        "mobilesdk_app_id": "1:106452613030:android:52d2dead7c5e314abdc167",
+        "android_client_info": {
+          "package_name": "br.edu.ifsp.dmo.alunosfirestore"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABPyAi8IALgzOlCK3ijzryZ1f0MtRD7qg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:106452613030:android:48c9a41e8dc1a1f8bdc167",
         "android_client_info": {
           "package_name": "br.edu.ifsp.dmo.syncchat"
         }
@@ -15,7 +34,26 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyASH6rSJ2wuMwLzuC4foq4Cfl9WSRKZN7E"
+          "current_key": "AIzaSyABPyAi8IALgzOlCK3ijzryZ1f0MtRD7qg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:106452613030:android:92f7942c80e2cdebbdc167",
+        "android_client_info": {
+          "package_name": "com.example.firetore"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABPyAi8IALgzOlCK3ijzryZ1f0MtRD7qg"
         }
       ],
       "services": {
