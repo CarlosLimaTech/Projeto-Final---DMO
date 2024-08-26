@@ -27,8 +27,8 @@ class ConversationActivity : AppCompatActivity() {
         messageRepository = MessageRepository()
 
         // Obtendo o ID do usuário logado de SharedPreferences
-        val sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
-        currentUserId = sharedPreferences.getString("loggedInUserId", "") ?: ""
+        val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        currentUserId = sharedPreferences.getString("userId", "") ?: ""
 
         // Recuperando o ID da conversa, nome e prontuário do usuário a partir do Intent
         conversationId = intent.getStringExtra("conversationId") ?: "defaultConversationId"
