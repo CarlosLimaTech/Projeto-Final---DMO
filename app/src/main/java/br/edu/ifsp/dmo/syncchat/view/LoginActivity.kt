@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import br.edu.ifsp.dmo.syncchat.databinding.ActivityLoginBinding
-import br.edu.ifsp.dmo.syncchat.model.User
 import br.edu.ifsp.dmo.syncchat.repository.UserRepository
 import com.google.android.material.snackbar.Snackbar
 
@@ -29,7 +28,8 @@ class LoginActivity : AppCompatActivity() {
                     val user = task.result
                     if (user != null) {
                         Snackbar.make(binding.root, "Login realizado com sucesso", Snackbar.LENGTH_LONG).show()
-                        val intent = Intent(this, MainActivity::class.java)
+                        // Redireciona para AllConversationsActivity
+                        val intent = Intent(this, AllConversationsActivity::class.java)
                         startActivity(intent)
                         finish()
                     }

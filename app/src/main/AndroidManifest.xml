@@ -33,5 +33,8 @@
         <!-- Atividade de Login -->
         <activity android:name=".view.LoginActivity" />
 
+        <!-- Todas as conversas -->
+        <activity android:name=".view.AllConversationsActivity" />
+
     </application>
 </manifest>

@@ -19,7 +19,9 @@ class UserRepository {
                 if (firestoreTask.isSuccessful) {
                     taskCompletionSource.setResult(null)
                 } else {
-                    taskCompletionSource.setException(firestoreTask.exception ?: Exception("Failed to save user data"))
+                    taskCompletionSource.setException(
+                        firestoreTask.exception ?: Exception("Failed to save user data")
+                    )
                 }
             }
 
@@ -38,5 +40,24 @@ class UserRepository {
                     null
                 }
             }
+    }
+
+    fun getUserByProntuario(prontuario: String): Task<User?> {
+        val taskCompletionSource = TaskCompletionSource<User?>()
+
+        db.collection("users")
+            .whereEqualTo("prontuario", prontuario)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful && !task.result.isEmpty) {
+                    val user = task.result.documents[0].toObject(User::class.java)
+                    taskCompletionSource.setResult(user)
+                } else {
+                    taskCompletionSource.setResult(null)
+                }
+            }
+
+        return taskCompletionSource.task
+
     }
 }
