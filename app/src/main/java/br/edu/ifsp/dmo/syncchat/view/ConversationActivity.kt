@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.edu.ifsp.dmo.syncchat.databinding.ActivityConversationBinding
 import br.edu.ifsp.dmo.syncchat.model.Message
+import br.edu.ifsp.dmo.syncchat.model.Conversation
 import br.edu.ifsp.dmo.syncchat.repository.MessageRepository
+import com.google.firebase.firestore.FirebaseFirestore
 
 class ConversationActivity : AppCompatActivity() {
 
@@ -18,6 +20,7 @@ class ConversationActivity : AppCompatActivity() {
     private lateinit var userProntuario: String
     private lateinit var receiverId: String // ID do destinatário
     private lateinit var currentUserId: String // ID do usuário logado
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,10 +34,10 @@ class ConversationActivity : AppCompatActivity() {
         currentUserId = sharedPreferences.getString("userId", "") ?: ""
 
         // Recuperando o ID da conversa, nome e prontuário do usuário a partir do Intent
-        conversationId = intent.getStringExtra("conversationId") ?: "defaultConversationId"
+        receiverId = intent.getStringExtra("receiverId") ?: "defaultReceiverId" // Obtém o ID do destinatário
+        conversationId = generateConversationId(currentUserId, receiverId)
         userName = intent.getStringExtra("userName") ?: "Nome desconhecido"
         userProntuario = intent.getStringExtra("userProntuario") ?: "Prontuário desconhecido"
-        receiverId = intent.getStringExtra("receiverId") ?: "defaultReceiverId" // Obtém o ID do destinatário
 
         // Configurando o RecyclerView
         binding.messageRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -60,8 +63,16 @@ class ConversationActivity : AppCompatActivity() {
                     receiverId = receiverId,  // ID do destinatário
                     content = messageContent
                 )
-                sendMessage(message)
+                checkAndSendMessage(message)
             }
+        }
+    }
+
+    private fun generateConversationId(user1Id: String, user2Id: String): String {
+        return if (user1Id < user2Id) {
+            "$user1Id-$user2Id"
+        } else {
+            "$user2Id-$user1Id"
         }
     }
 
@@ -72,6 +83,35 @@ class ConversationActivity : AppCompatActivity() {
                 messageAdapter.updateMessages(messages)
             }
         }
+    }
+
+    private fun checkAndSendMessage(message: Message) {
+        val conversationRef = db.collection("conversations").document(conversationId)
+        conversationRef.get().addOnSuccessListener { document ->
+            if (document.exists()) {
+                // Se a conversa já existe, apenas envie a mensagem
+                sendMessage(message)
+            } else {
+                // Se a conversa não existe, crie uma nova e envie a mensagem
+                createNewConversationAndSendMessage(message)
+            }
+        }
+    }
+
+    private fun createNewConversationAndSendMessage(message: Message) {
+        val newConversation = Conversation(
+            id = conversationId,
+            user1Id = currentUserId,
+            user2Id = receiverId,
+            lastMessage = message.content,
+            lastMessageTimestamp = System.currentTimeMillis()
+        )
+
+        db.collection("conversations").document(conversationId)
+            .set(newConversation)
+            .addOnCompleteListener {
+                sendMessage(message)
+            }
     }
 
     private fun sendMessage(message: Message) {
