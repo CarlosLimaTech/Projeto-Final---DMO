@@ -1,6 +1,7 @@
 package br.edu.ifsp.dmo.syncchat.view
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -19,12 +20,14 @@ class AllConversationsActivity : AppCompatActivity() {
     private lateinit var conversationAdapter: ConversationAdapter
     private lateinit var conversationRepository: ConversationRepository
     private lateinit var userRepository: UserRepository
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAllConversationsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
         conversationRepository = ConversationRepository()
         userRepository = UserRepository()
 
@@ -63,7 +66,7 @@ class AllConversationsActivity : AppCompatActivity() {
     }
 
     private fun loadConversations() {
-        val currentUserId = "currentUserId" // Substitua pelo ID do usuário logado
+        val currentUserId = sharedPreferences.getString("userId", null) ?: return
         conversationRepository.getAllConversations(currentUserId).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val conversations = task.result ?: emptyList()
@@ -79,7 +82,8 @@ class AllConversationsActivity : AppCompatActivity() {
     }
 
     private fun startConversationWithUser(user: User) {
-        conversationRepository.findOrCreateConversation("currentUserId", user.id)
+        val currentUserId = sharedPreferences.getString("userId", null) ?: return
+        conversationRepository.findOrCreateConversation(currentUserId, user.id)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val conversation = task.result

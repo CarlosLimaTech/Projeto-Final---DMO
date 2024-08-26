@@ -44,7 +44,6 @@ class UserRepository {
 
     fun getUserByProntuario(prontuario: String): Task<User?> {
         val taskCompletionSource = TaskCompletionSource<User?>()
-
         db.collection("users")
             .whereEqualTo("prontuario", prontuario)
             .get()
@@ -56,8 +55,7 @@ class UserRepository {
                     taskCompletionSource.setResult(null)
                 }
             }
-
         return taskCompletionSource.task
-
     }
+
 }
