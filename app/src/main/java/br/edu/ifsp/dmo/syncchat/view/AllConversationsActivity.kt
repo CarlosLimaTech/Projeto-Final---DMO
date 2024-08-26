@@ -1,7 +1,6 @@
 package br.edu.ifsp.dmo.syncchat.view
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -20,14 +19,12 @@ class AllConversationsActivity : AppCompatActivity() {
     private lateinit var conversationAdapter: ConversationAdapter
     private lateinit var conversationRepository: ConversationRepository
     private lateinit var userRepository: UserRepository
-    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAllConversationsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
         conversationRepository = ConversationRepository()
         userRepository = UserRepository()
 
@@ -66,7 +63,7 @@ class AllConversationsActivity : AppCompatActivity() {
     }
 
     private fun loadConversations() {
-        val currentUserId = sharedPreferences.getString("userId", null) ?: return
+        val currentUserId = "currentUserId" // Substitua pelo ID do usuário logado
         conversationRepository.getAllConversations(currentUserId).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val conversations = task.result ?: emptyList()
@@ -82,14 +79,16 @@ class AllConversationsActivity : AppCompatActivity() {
     }
 
     private fun startConversationWithUser(user: User) {
-        val currentUserId = sharedPreferences.getString("userId", null) ?: return
-        conversationRepository.findOrCreateConversation(currentUserId, user.id)
+        conversationRepository.findOrCreateConversation("currentUserId", user.id)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val conversation = task.result
                     if (conversation != null) {
                         val intent = Intent(this, ConversationActivity::class.java)
                         intent.putExtra("conversationId", conversation.id)
+                        intent.putExtra("userName", user.nome)
+                        intent.putExtra("userProntuario", user.prontuario)
+                        intent.putExtra("receiverId", user.id)
                         startActivity(intent)
                     }
                 } else {
