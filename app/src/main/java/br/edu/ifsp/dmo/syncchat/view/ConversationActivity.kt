@@ -1,9 +1,9 @@
 package br.edu.ifsp.dmo.syncchat.view
 
+import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import br.edu.ifsp.dmo.syncchat.view.MessageAdapter
 import br.edu.ifsp.dmo.syncchat.databinding.ActivityConversationBinding
 import br.edu.ifsp.dmo.syncchat.model.Message
 import br.edu.ifsp.dmo.syncchat.repository.MessageRepository
@@ -14,6 +14,10 @@ class ConversationActivity : AppCompatActivity() {
     private lateinit var messageRepository: MessageRepository
     private lateinit var messageAdapter: MessageAdapter
     private lateinit var conversationId: String
+    private lateinit var userName: String
+    private lateinit var userProntuario: String
+    private lateinit var receiverId: String // ID do destinatário
+    private lateinit var currentUserId: String // ID do usuário logado
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,13 +26,29 @@ class ConversationActivity : AppCompatActivity() {
 
         messageRepository = MessageRepository()
 
-        // Configurando RecyclerView
+        // Obtendo o ID do usuário logado de SharedPreferences
+        val sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
+        currentUserId = sharedPreferences.getString("loggedInUserId", "") ?: ""
+
+        // Recuperando o ID da conversa, nome e prontuário do usuário a partir do Intent
+        conversationId = intent.getStringExtra("conversationId") ?: "defaultConversationId"
+        userName = intent.getStringExtra("userName") ?: "Nome desconhecido"
+        userProntuario = intent.getStringExtra("userProntuario") ?: "Prontuário desconhecido"
+        receiverId = intent.getStringExtra("receiverId") ?: "defaultReceiverId" // Obtém o ID do destinatário
+
+        // Configurando o RecyclerView
         binding.messageRecyclerView.layoutManager = LinearLayoutManager(this)
         messageAdapter = MessageAdapter(emptyList())
         binding.messageRecyclerView.adapter = messageAdapter
 
-        // Recuperando o ID da conversa a partir do Intent
-        conversationId = intent.getStringExtra("conversationId") ?: "defaultConversationId"
+        // Exibindo o nome e o prontuário do outro usuário
+        binding.userNameTextView.text = userName
+        binding.userProntuarioTextView.text = userProntuario
+
+        // Configurando o botão de voltar
+        binding.backButton.setOnClickListener {
+            finish()
+        }
 
         loadMessages()
 
@@ -36,8 +56,8 @@ class ConversationActivity : AppCompatActivity() {
             val messageContent = binding.messageEditText.text.toString()
             if (messageContent.isNotEmpty()) {
                 val message = Message(
-                    senderId = "user1Id",  // ID do usuário logado
-                    receiverId = "user2Id",  // ID do destinatário
+                    senderId = currentUserId,  // ID do usuário logado
+                    receiverId = receiverId,  // ID do destinatário
                     content = messageContent
                 )
                 sendMessage(message)

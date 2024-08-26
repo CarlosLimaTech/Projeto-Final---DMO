@@ -11,10 +11,13 @@ class UserRepository {
 
     fun registerUser(user: User): Task<Void> {
         val taskCompletionSource = TaskCompletionSource<Void>()
+        val userRef = db.collection("users").document() // Gera uma referência de documento com ID único
 
-        // Salva diretamente os dados do usuário no Firestore sem autenticação
-        db.collection("users")
-            .add(user)
+        val userId = userRef.id // Obtém o ID gerado
+
+        val userWithId = user.copy(id = userId) // Cria um novo objeto User com o ID gerado
+
+        userRef.set(userWithId) // Salva o objeto User com o ID no Firestore
             .addOnCompleteListener { firestoreTask ->
                 if (firestoreTask.isSuccessful) {
                     taskCompletionSource.setResult(null)
