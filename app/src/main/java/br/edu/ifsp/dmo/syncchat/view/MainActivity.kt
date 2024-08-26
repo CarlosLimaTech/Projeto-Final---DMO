@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import br.edu.ifsp.dmo.syncchat.databinding.ActivityMainBinding
-import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,21 +14,15 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Aqui você poderia configurar uma lista de contatos ou conversas disponíveis
-        // Por exemplo, para selecionar com quem deseja conversar
-
-        binding.startConversationButton.setOnClickListener {
-            // Exemplo: iniciar uma nova conversa com outro usuário
-            val intent = Intent(this, ConversationActivity::class.java)
-            intent.putExtra("conversationId", "user1Id-user2Id")  // Passando o ID da conversa
+        // Configurações dos botões
+        binding.loginButton.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
 
-        binding.logoutButton.setOnClickListener {
-            // Exemplo: fazer logout e retornar para a tela de login
-            val intent = Intent(this, LoginActivity::class.java)
+        binding.registerButton.setOnClickListener {
+            val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
-            finish()
         }
     }
 }

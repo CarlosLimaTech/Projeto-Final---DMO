@@ -14,9 +14,9 @@
         android:theme="@style/Theme.SyncChat"
         tools:targetApi="31">
 
-        <!-- Atividade de Registro (inicial) -->
+        <!-- Atividade Principal (inicial) -->
         <activity
-            android:name=".view.RegisterActivity"
+            android:name=".view.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,14 +24,14 @@
             </intent-filter>
         </activity>
 
-        <!-- Atividade Principal -->
-        <activity android:name=".view.MainActivity" />
+        <!-- Atividade de Registro -->
+        <activity android:name=".view.RegisterActivity" />
 
         <!-- Atividade de Conversa -->
         <activity android:name=".view.ConversationActivity" />
 
         <!-- Atividade de Login -->
-        <activity android:name=".view.LoginActivity" /> <!-- Adicione esta linha -->
+        <activity android:name=".view.LoginActivity" />
 
     </application>
 </manifest>

@@ -20,22 +20,6 @@ class LoginActivity : AppCompatActivity() {
 
         userRepository = UserRepository()
 
-        // Registro de usuário
-        binding.registerButton.setOnClickListener {
-            val user = User(
-                nome = binding.nameEditText.text.toString(),
-                senha = binding.passwordEditText.text.toString(),
-                prontuario = binding.prontuarioEditText.text.toString()
-            )
-            userRepository.registerUser(user).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Snackbar.make(binding.root, "Registro realizado com sucesso", Snackbar.LENGTH_LONG).show()
-                } else {
-                    Snackbar.make(binding.root, "Erro ao registrar usuário", Snackbar.LENGTH_LONG).show()
-                }
-            }
-        }
-
         // Login de usuário
         binding.loginButton.setOnClickListener {
             val prontuario = binding.prontuarioEditText.text.toString()
