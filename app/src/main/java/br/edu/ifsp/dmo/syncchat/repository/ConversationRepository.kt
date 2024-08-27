@@ -13,12 +13,23 @@ class ConversationRepository {
         val taskCompletionSource = TaskCompletionSource<List<Conversation>>()
 
         db.collection("conversations")
-            .whereArrayContains("participants", userId)
+            .whereEqualTo("user1Id", userId)
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val conversations = task.result?.toObjects(Conversation::class.java) ?: emptyList()
-                    taskCompletionSource.setResult(conversations)
+                    val conversations1 = task.result?.toObjects(Conversation::class.java) ?: emptyList()
+
+                    db.collection("conversations")
+                        .whereEqualTo("user2Id", userId)
+                        .get()
+                        .addOnCompleteListener { task2 ->
+                            if (task2.isSuccessful) {
+                                val conversations2 = task2.result?.toObjects(Conversation::class.java) ?: emptyList()
+                                taskCompletionSource.setResult(conversations1 + conversations2)
+                            } else {
+                                taskCompletionSource.setException(task2.exception ?: Exception("Erro ao buscar conversas"))
+                            }
+                        }
                 } else {
                     taskCompletionSource.setException(task.exception ?: Exception("Erro ao buscar conversas"))
                 }
@@ -38,7 +49,11 @@ class ConversationRepository {
                 if (conversation != null) {
                     taskCompletionSource.setResult(conversation)
                 } else {
-                    val newConversation = Conversation(id = conversationId, user1Id = user1Id, user2Id = user2Id)
+                    val newConversation = Conversation(
+                        id = conversationId,
+                        user1Id = user1Id,
+                        user2Id = user2Id
+                    )
                     docRef.set(newConversation).addOnCompleteListener { setTask ->
                         if (setTask.isSuccessful) {
                             taskCompletionSource.setResult(newConversation)

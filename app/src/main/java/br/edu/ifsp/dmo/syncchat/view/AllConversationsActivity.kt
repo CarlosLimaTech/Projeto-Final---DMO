@@ -1,9 +1,11 @@
 package br.edu.ifsp.dmo.syncchat.view
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.edu.ifsp.dmo.syncchat.databinding.ActivityAllConversationsBinding
@@ -19,11 +21,16 @@ class AllConversationsActivity : AppCompatActivity() {
     private lateinit var conversationAdapter: ConversationAdapter
     private lateinit var conversationRepository: ConversationRepository
     private lateinit var userRepository: UserRepository
+    private lateinit var currentUserId: String // Definido como lateinit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAllConversationsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Mover a inicialização do SharedPreferences para onCreate
+        val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        currentUserId = sharedPreferences.getString("userId", "") ?: ""
 
         conversationRepository = ConversationRepository()
         userRepository = UserRepository()
@@ -34,7 +41,7 @@ class AllConversationsActivity : AppCompatActivity() {
         }
         binding.conversationsRecyclerView.adapter = conversationAdapter
 
-        loadConversations()
+        loadConversations() // Certifique-se de carregar as conversas após configurar o adapter
 
         // Implementação da barra de busca
         binding.searchEditText.addTextChangedListener(object : TextWatcher {
@@ -63,12 +70,23 @@ class AllConversationsActivity : AppCompatActivity() {
     }
 
     private fun loadConversations() {
-        val currentUserId = "currentUserId" // Substitua pelo ID do usuário logado
-        conversationRepository.getAllConversations(currentUserId).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val conversations = task.result ?: emptyList()
-                conversationAdapter.updateConversations(conversations)
+        if (currentUserId.isNotEmpty()) {
+            Log.d("AllConversationsActivity", "Current User ID: $currentUserId")  // Log do userId
+            conversationRepository.getAllConversations(currentUserId).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val conversations = task.result ?: emptyList()
+                    if (conversations.isEmpty()) {
+                        Snackbar.make(binding.root, "Nenhuma conversa encontrada.", Snackbar.LENGTH_LONG).show()
+                    } else {
+                        Log.d("AllConversationsActivity", "Conversations found: ${conversations.size}")  // Log do número de conversas encontradas
+                        conversationAdapter.updateConversations(conversations)
+                    }
+                } else {
+                    Snackbar.make(binding.root, "Erro ao carregar conversas: ${task.exception?.message}", Snackbar.LENGTH_LONG).show()
+                }
             }
+        } else {
+            Snackbar.make(binding.root, "ID do usuário não encontrado.", Snackbar.LENGTH_LONG).show()
         }
     }
 
@@ -79,7 +97,7 @@ class AllConversationsActivity : AppCompatActivity() {
     }
 
     private fun startConversationWithUser(user: User) {
-        conversationRepository.findOrCreateConversation("currentUserId", user.id)
+        conversationRepository.findOrCreateConversation(currentUserId, user.id)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val conversation = task.result

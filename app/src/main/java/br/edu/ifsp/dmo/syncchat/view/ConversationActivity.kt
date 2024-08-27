@@ -9,6 +9,7 @@ import br.edu.ifsp.dmo.syncchat.model.Message
 import br.edu.ifsp.dmo.syncchat.model.Conversation
 import br.edu.ifsp.dmo.syncchat.repository.MessageRepository
 import com.google.firebase.firestore.FirebaseFirestore
+import android.util.Log
 
 class ConversationActivity : AppCompatActivity() {
 
@@ -109,8 +110,12 @@ class ConversationActivity : AppCompatActivity() {
 
         db.collection("conversations").document(conversationId)
             .set(newConversation)
-            .addOnCompleteListener {
-                sendMessage(message)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    sendMessage(message)
+                } else {
+                    Log.e("ConversationActivity", "Erro ao criar nova conversa: ${task.exception?.message}")
+                }
             }
     }
 
