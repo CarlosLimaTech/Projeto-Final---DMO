@@ -56,10 +56,17 @@ class ConversationAdapter(
 
             // Busca o nome do usuário a partir do ID
             val userRepository = UserRepository()
-            userRepository.getUserById(otherUserId).addOnSuccessListener { user ->
-                if (user != null) {
-                    userTextView.text = user.nome
-                } // Atualize para exibir o nome do usuário
+            userRepository.getUserById(otherUserId).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val user = task.result
+                    if (user != null) {
+                        userTextView.text = user.nome
+                    } else {
+                        userTextView.text = "Usuário Desconhecido"
+                    }
+                } else {
+                    userTextView.text = "Erro ao carregar"
+                }
             }
 
             lastMessageTextView.text = conversation.lastMessage

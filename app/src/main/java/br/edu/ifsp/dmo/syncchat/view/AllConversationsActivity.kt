@@ -91,9 +91,20 @@ class AllConversationsActivity : AppCompatActivity() {
     }
 
     private fun openConversation(conversation: Conversation) {
-        val intent = Intent(this, ConversationActivity::class.java)
-        intent.putExtra("conversationId", conversation.id)
-        startActivity(intent)
+        val otherUserId = if (conversation.user1Id == currentUserId) conversation.user2Id else conversation.user1Id
+        userRepository.getUserById(otherUserId).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val user = task.result
+                if (user != null) {
+                    val intent = Intent(this, ConversationActivity::class.java)
+                    intent.putExtra("conversationId", conversation.id)
+                    intent.putExtra("userName", user.nome)
+                    intent.putExtra("userProntuario", user.prontuario)
+                    intent.putExtra("receiverId", user.id)
+                    startActivity(intent)
+                }
+            }
+        }
     }
 
     private fun startConversationWithUser(user: User) {
