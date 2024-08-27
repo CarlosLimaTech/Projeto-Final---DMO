@@ -41,7 +41,7 @@ class ConversationActivity : AppCompatActivity() {
 
         // Configurando o RecyclerView
         binding.messageRecyclerView.layoutManager = LinearLayoutManager(this)
-        messageAdapter = MessageAdapter(emptyList())
+        messageAdapter = MessageAdapter(emptyList(), currentUserId)
         binding.messageRecyclerView.adapter = messageAdapter
 
         // Exibindo o nome e o prontuário do outro usuário
