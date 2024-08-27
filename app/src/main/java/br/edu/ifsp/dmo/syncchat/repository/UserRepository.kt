@@ -60,4 +60,19 @@ class UserRepository {
             }
         return taskCompletionSource.task
     }
+
+    fun getUserById(userId: String): Task<User?> {
+        val taskCompletionSource = TaskCompletionSource<User?>()
+        db.collection("users").document(userId)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val user = task.result?.toObject(User::class.java)
+                    taskCompletionSource.setResult(user)
+                } else {
+                    taskCompletionSource.setResult(null)
+                }
+            }
+        return taskCompletionSource.task
+    }
 }

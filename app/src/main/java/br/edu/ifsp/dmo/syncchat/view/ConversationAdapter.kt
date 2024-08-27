@@ -1,5 +1,6 @@
 package br.edu.ifsp.dmo.syncchat.view
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import br.edu.ifsp.dmo.syncchat.R
 import br.edu.ifsp.dmo.syncchat.model.Conversation
+import br.edu.ifsp.dmo.syncchat.repository.UserRepository
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -42,8 +44,24 @@ class ConversationAdapter(
         private val timestampTextView: TextView = itemView.findViewById(R.id.conversationTimestampTextView)
 
         fun bind(conversation: Conversation) {
-            val userName = if (conversation.user1Id == "currentUserId") conversation.user2Id else conversation.user1Id
-            userTextView.text = userName
+            val context = itemView.context
+            val sharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+            val currentUserId = sharedPreferences.getString("userId", "") ?: ""
+
+            val otherUserId = if (conversation.user1Id == currentUserId) {
+                conversation.user2Id
+            } else {
+                conversation.user1Id
+            }
+
+            // Busca o nome do usuário a partir do ID
+            val userRepository = UserRepository()
+            userRepository.getUserById(otherUserId).addOnSuccessListener { user ->
+                if (user != null) {
+                    userTextView.text = user.nome
+                } // Atualize para exibir o nome do usuário
+            }
+
             lastMessageTextView.text = conversation.lastMessage
             val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
             timestampTextView.text = sdf.format(Date(conversation.lastMessageTimestamp))
