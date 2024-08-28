@@ -14,6 +14,7 @@ import br.edu.ifsp.dmo.syncchat.model.User
 import br.edu.ifsp.dmo.syncchat.repository.ConversationRepository
 import br.edu.ifsp.dmo.syncchat.repository.UserRepository
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.ListenerRegistration
 
 class AllConversationsActivity : AppCompatActivity() {
 
@@ -21,14 +22,14 @@ class AllConversationsActivity : AppCompatActivity() {
     private lateinit var conversationAdapter: ConversationAdapter
     private lateinit var conversationRepository: ConversationRepository
     private lateinit var userRepository: UserRepository
-    private lateinit var currentUserId: String // Definido como lateinit
+    private lateinit var currentUserId: String
+    private var listenerRegistration: ListenerRegistration? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAllConversationsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Mover a inicialização do SharedPreferences para onCreate
         val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         currentUserId = sharedPreferences.getString("userId", "") ?: ""
 
@@ -41,9 +42,8 @@ class AllConversationsActivity : AppCompatActivity() {
         }
         binding.conversationsRecyclerView.adapter = conversationAdapter
 
-        loadConversations() // Certifique-se de carregar as conversas após configurar o adapter
+        loadConversations()
 
-        // Implementação da barra de busca
         binding.searchEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
 
@@ -71,23 +71,21 @@ class AllConversationsActivity : AppCompatActivity() {
 
     private fun loadConversations() {
         if (currentUserId.isNotEmpty()) {
-            Log.d("AllConversationsActivity", "Current User ID: $currentUserId")  // Log do userId
-            conversationRepository.getAllConversations(currentUserId).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val conversations = task.result ?: emptyList()
-                    if (conversations.isEmpty()) {
-                        Snackbar.make(binding.root, "Nenhuma conversa encontrada.", Snackbar.LENGTH_LONG).show()
-                    } else {
-                        Log.d("AllConversationsActivity", "Conversations found: ${conversations.size}")  // Log do número de conversas encontradas
-                        conversationAdapter.updateConversations(conversations)
-                    }
+            listenerRegistration = conversationRepository.getAllConversations(currentUserId) { conversations ->
+                if (conversations.isEmpty()) {
+                    Snackbar.make(binding.root, "Nenhuma conversa encontrada.", Snackbar.LENGTH_LONG).show()
                 } else {
-                    Snackbar.make(binding.root, "Erro ao carregar conversas: ${task.exception?.message}", Snackbar.LENGTH_LONG).show()
+                    conversationAdapter.updateConversations(conversations)
                 }
             }
         } else {
             Snackbar.make(binding.root, "ID do usuário não encontrado.", Snackbar.LENGTH_LONG).show()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        listenerRegistration?.remove()
     }
 
     private fun openConversation(conversation: Conversation) {

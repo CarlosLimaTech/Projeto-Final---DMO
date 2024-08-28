@@ -4,38 +4,47 @@ import com.google.firebase.firestore.FirebaseFirestore
 import br.edu.ifsp.dmo.syncchat.model.Conversation
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
+import com.google.firebase.firestore.ListenerRegistration
 
 class ConversationRepository {
 
     private val db = FirebaseFirestore.getInstance()
 
-    fun getAllConversations(userId: String): Task<List<Conversation>> {
-        val taskCompletionSource = TaskCompletionSource<List<Conversation>>()
+    fun getAllConversations(userId: String, onConversationsChanged: (List<Conversation>) -> Unit): ListenerRegistration {
+        val conversationsList = mutableListOf<Conversation>()
 
-        db.collection("conversations")
+        // Listener para conversas onde userId é user1Id ou user2Id
+        val listener1 = db.collection("conversations")
             .whereEqualTo("user1Id", userId)
-            .get()
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val conversations1 = task.result?.toObjects(Conversation::class.java) ?: emptyList()
-
-                    db.collection("conversations")
-                        .whereEqualTo("user2Id", userId)
-                        .get()
-                        .addOnCompleteListener { task2 ->
-                            if (task2.isSuccessful) {
-                                val conversations2 = task2.result?.toObjects(Conversation::class.java) ?: emptyList()
-                                taskCompletionSource.setResult(conversations1 + conversations2)
-                            } else {
-                                taskCompletionSource.setException(task2.exception ?: Exception("Erro ao buscar conversas"))
-                            }
-                        }
-                } else {
-                    taskCompletionSource.setException(task.exception ?: Exception("Erro ao buscar conversas"))
+            .addSnapshotListener { snapshots, e ->
+                if (e != null) {
+                    // Handle the error
+                    return@addSnapshotListener
                 }
+
+                conversationsList.clear()
+                snapshots?.toObjects(Conversation::class.java)?.let {
+                    conversationsList.addAll(it)
+                }
+
+                // Listener para conversas onde userId é user2Id
+                db.collection("conversations")
+                    .whereEqualTo("user2Id", userId)
+                    .addSnapshotListener { snapshots2, e2 ->
+                        if (e2 != null) {
+                            // Handle the error
+                            return@addSnapshotListener
+                        }
+
+                        snapshots2?.toObjects(Conversation::class.java)?.let {
+                            conversationsList.addAll(it)
+                        }
+
+                        onConversationsChanged(conversationsList)
+                    }
             }
 
-        return taskCompletionSource.task
+        return listener1 // Retornando o primeiro listener (para evitar memory leaks)
     }
 
     fun findOrCreateConversation(user1Id: String, user2Id: String): Task<Conversation> {
