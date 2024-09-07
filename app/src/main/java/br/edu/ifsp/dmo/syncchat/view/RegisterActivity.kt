@@ -2,11 +2,11 @@ package br.edu.ifsp.dmo.syncchat.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import br.edu.ifsp.dmo.syncchat.databinding.ActivityRegisterBinding
 import br.edu.ifsp.dmo.syncchat.model.User
 import br.edu.ifsp.dmo.syncchat.repository.UserRepository
-import com.google.android.material.snackbar.Snackbar
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -29,12 +29,12 @@ class RegisterActivity : AppCompatActivity() {
 
             userRepository.registerUser(user).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Snackbar.make(binding.root, "Registro realizado com sucesso", Snackbar.LENGTH_LONG).show()
+                    Toast.makeText(this, "Registro realizado com sucesso", Toast.LENGTH_LONG).show()
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                     finish() // Fecha a tela de registro
                 } else {
-                    Snackbar.make(binding.root, "Erro ao registrar usuário", Snackbar.LENGTH_LONG).show()
+                    Toast.makeText(this, "Erro ao registrar usuário", Toast.LENGTH_LONG).show()
                 }
             }
         }

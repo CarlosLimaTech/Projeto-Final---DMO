@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import br.edu.ifsp.dmo.syncchat.R
 import br.edu.ifsp.dmo.syncchat.model.Conversation
@@ -63,9 +64,11 @@ class ConversationAdapter(
                         userTextView.text = user.nome
                     } else {
                         userTextView.text = "Usuário Desconhecido"
+                        Toast.makeText(context, "Erro ao carregar usuário", Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     userTextView.text = "Erro ao carregar"
+                    Toast.makeText(context, "Erro ao buscar dados do usuário", Toast.LENGTH_SHORT).show()
                 }
             }
 

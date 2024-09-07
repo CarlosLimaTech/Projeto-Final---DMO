@@ -2,6 +2,8 @@ package br.edu.ifsp.dmo.syncchat.view
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.edu.ifsp.dmo.syncchat.databinding.ActivityConversationBinding
@@ -9,7 +11,6 @@ import br.edu.ifsp.dmo.syncchat.model.Message
 import br.edu.ifsp.dmo.syncchat.model.Conversation
 import br.edu.ifsp.dmo.syncchat.repository.MessageRepository
 import com.google.firebase.firestore.FirebaseFirestore
-import android.util.Log
 
 class ConversationActivity : AppCompatActivity() {
 
@@ -65,6 +66,8 @@ class ConversationActivity : AppCompatActivity() {
                     content = messageContent
                 )
                 checkAndSendMessage(message)
+            } else {
+                Toast.makeText(this, "Mensagem vazia. Digite algo para enviar.", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -82,6 +85,8 @@ class ConversationActivity : AppCompatActivity() {
             if (task.isSuccessful) {
                 val messages = task.result ?: emptyList()
                 messageAdapter.updateMessages(messages)
+            } else {
+                Toast.makeText(this, "Erro ao carregar mensagens", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -90,12 +95,12 @@ class ConversationActivity : AppCompatActivity() {
         val conversationRef = db.collection("conversations").document(conversationId)
         conversationRef.get().addOnSuccessListener { document ->
             if (document.exists()) {
-                // Se a conversa já existe, apenas envie a mensagem
-                sendMessage(message)
+                sendMessage(message) // Se a conversa já existe, apenas envie a mensagem
             } else {
-                // Se a conversa não existe, crie uma nova e envie a mensagem
-                createNewConversationAndSendMessage(message)
+                createNewConversationAndSendMessage(message) // Crie uma nova conversa e envie a mensagem
             }
+        }.addOnFailureListener {
+            Toast.makeText(this, "Erro ao verificar conversa existente", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -114,6 +119,7 @@ class ConversationActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     sendMessage(message)
                 } else {
+                    Toast.makeText(this, "Erro ao criar nova conversa", Toast.LENGTH_SHORT).show()
                     Log.e("ConversationActivity", "Erro ao criar nova conversa: ${task.exception?.message}")
                 }
             }
@@ -124,6 +130,8 @@ class ConversationActivity : AppCompatActivity() {
             if (task.isSuccessful) {
                 binding.messageEditText.text.clear()
                 loadMessages() // Recarregar as mensagens após o envio
+            } else {
+                Toast.makeText(this, "Erro ao enviar mensagem", Toast.LENGTH_SHORT).show()
             }
         }
     }

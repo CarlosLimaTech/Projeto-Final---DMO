@@ -7,6 +7,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.edu.ifsp.dmo.syncchat.databinding.ActivityAllConversationsBinding
@@ -14,7 +15,6 @@ import br.edu.ifsp.dmo.syncchat.model.Conversation
 import br.edu.ifsp.dmo.syncchat.model.User
 import br.edu.ifsp.dmo.syncchat.repository.ConversationRepository
 import br.edu.ifsp.dmo.syncchat.repository.UserRepository
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.ListenerRegistration
 
 class AllConversationsActivity : AppCompatActivity() {
@@ -59,10 +59,10 @@ class AllConversationsActivity : AppCompatActivity() {
                             if (user != null) {
                                 startConversationWithUser(user)
                             } else {
-                                Snackbar.make(binding.root, "Usuário não encontrado", Snackbar.LENGTH_LONG).show()
+                                Toast.makeText(this@AllConversationsActivity, "Usuário não encontrado", Toast.LENGTH_LONG).show()
                             }
                         } else {
-                            Snackbar.make(binding.root, "Erro ao buscar usuário", Snackbar.LENGTH_LONG).show()
+                            Toast.makeText(this@AllConversationsActivity, "Erro ao buscar usuário", Toast.LENGTH_LONG).show()
                         }
                     }
                 }
@@ -74,13 +74,13 @@ class AllConversationsActivity : AppCompatActivity() {
         if (currentUserId.isNotEmpty()) {
             listenerRegistration = conversationRepository.getAllConversations(currentUserId) { conversations ->
                 if (conversations.isEmpty()) {
-                    Snackbar.make(binding.root, "Nenhuma conversa encontrada.", Snackbar.LENGTH_LONG).show()
+                    Toast.makeText(this, "Nenhuma conversa encontrada.", Toast.LENGTH_LONG).show()
                 } else {
                     conversationAdapter.updateConversations(conversations)
                 }
             }
         } else {
-            Snackbar.make(binding.root, "ID do usuário não encontrado.", Snackbar.LENGTH_LONG).show()
+            Toast.makeText(this, "ID do usuário não encontrado.", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -88,7 +88,6 @@ class AllConversationsActivity : AppCompatActivity() {
         val intent = Intent(this, ProfileActivity::class.java)
         startActivity(intent)
     }
-
 
     override fun onDestroy() {
         super.onDestroy()
@@ -126,7 +125,7 @@ class AllConversationsActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                 } else {
-                    Snackbar.make(binding.root, "Erro ao iniciar conversa", Snackbar.LENGTH_LONG).show()
+                    Toast.makeText(this, "Erro ao iniciar conversa", Toast.LENGTH_LONG).show()
                 }
             }
     }

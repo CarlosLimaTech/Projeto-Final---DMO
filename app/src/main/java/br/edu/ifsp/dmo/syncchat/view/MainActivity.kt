@@ -3,6 +3,7 @@ package br.edu.ifsp.dmo.syncchat.view
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import br.edu.ifsp.dmo.syncchat.databinding.ActivityMainBinding
 
@@ -38,9 +39,12 @@ class MainActivity : AppCompatActivity() {
         val userId = sharedPreferences.getString("userId", null)
         if (userId != null) {
             // Se o userId estiver presente, o usuário está logado, redireciona para AllConversationsActivity
+            Toast.makeText(this, "Usuário já logado", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, AllConversationsActivity::class.java)
             startActivity(intent)
             finish()  // Finaliza a MainActivity para que o usuário não possa voltar para ela
+        } else {
+            Toast.makeText(this, "Nenhum usuário logado", Toast.LENGTH_SHORT).show()
         }
     }
 }

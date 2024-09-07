@@ -3,10 +3,10 @@ package br.edu.ifsp.dmo.syncchat.view
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import br.edu.ifsp.dmo.syncchat.databinding.ActivityLoginBinding
 import br.edu.ifsp.dmo.syncchat.repository.UserRepository
-import com.google.android.material.snackbar.Snackbar
 
 class LoginActivity : AppCompatActivity() {
 
@@ -38,13 +38,13 @@ class LoginActivity : AppCompatActivity() {
                         editor.putString("userId", user.id)
                         editor.apply()
 
-                        Snackbar.make(binding.root, "Login realizado com sucesso", Snackbar.LENGTH_LONG).show()
+                        Toast.makeText(this, "Login realizado com sucesso", Toast.LENGTH_LONG).show()
                         val intent = Intent(this, AllConversationsActivity::class.java)
                         startActivity(intent)
                         finish()
                     }
                 } else {
-                    Snackbar.make(binding.root, "Erro ao realizar login", Snackbar.LENGTH_LONG).show()
+                    Toast.makeText(this, "Erro ao realizar login", Toast.LENGTH_LONG).show()
                 }
             }
         }
