@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.edu.ifsp.dmo.syncchat.databinding.ActivityAllConversationsBinding
@@ -82,6 +83,12 @@ class AllConversationsActivity : AppCompatActivity() {
             Snackbar.make(binding.root, "ID do usuário não encontrado.", Snackbar.LENGTH_LONG).show()
         }
     }
+
+    fun onProfileIconClicked(view: View) {
+        val intent = Intent(this, ProfileActivity::class.java)
+        startActivity(intent)
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()

@@ -75,4 +75,8 @@ class UserRepository {
             }
         return taskCompletionSource.task
     }
+
+    fun updateUserPassword(user: User): Task<Void> {
+        return db.collection("users").document(user.id).update("senha", user.senha)
+    }
 }

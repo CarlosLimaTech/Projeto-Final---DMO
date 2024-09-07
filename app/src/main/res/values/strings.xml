@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">SyncChat</string>
     <string name="back_button">back</string>
+    <string name="search_user">Buscar Usuario</string>
 </resources>

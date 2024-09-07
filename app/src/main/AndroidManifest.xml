@@ -36,5 +36,7 @@
         <!-- Todas as conversas -->
         <activity android:name=".view.AllConversationsActivity" />
 
+        <activity android:name=".view.ProfileActivity"/>
+
     </application>
 </manifest>
