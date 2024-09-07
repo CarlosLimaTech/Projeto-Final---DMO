@@ -4,37 +4,50 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
 
+    <!-- Nome do usuário -->
     <TextView
-        android:id="@+id/conversationUserTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Usuário"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/conversationTimestampTextView" />
+    android:id="@+id/conversationUserTextView"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:text="Usuário"
+    android:textSize="18sp"
+    android:textStyle="bold"
+    android:textColor="@color/primaryColor"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toStartOf="@+id/conversationTimestampTextView"
+    app:layout_constraintBaseline_toBaselineOf="@+id/conversationTimestampTextView" />
 
+    <!-- Horário da última mensagem -->
     <TextView
-        android:id="@+id/conversationTimestampTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Horário"
-        android:textSize="12sp"
-        app:layout_constraintTop_toTopOf="@+id/conversationUserTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBaseline_toBaselineOf="@+id/conversationUserTextView" />
+    android:id="@+id/conversationTimestampTextView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="10:30 AM"
+    android:textSize="12sp"
+    android:textColor="@color/grayColor"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintBaseline_toBaselineOf="@+id/conversationUserTextView" />
 
+    <!-- Última mensagem -->
     <TextView
-        android:id="@+id/conversationLastMessageTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Última mensagem"
-        android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@+id/conversationUserTextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+    android:id="@+id/conversationLastMessageTextView"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:text="Última mensagem"
+    android:textSize="14sp"
+    android:textColor="@color/secondaryTextColor"
+    android:maxLines="1"
+    android:ellipsize="end"
+    app:layout_constraintTop_toBottomOf="@+id/conversationUserTextView"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

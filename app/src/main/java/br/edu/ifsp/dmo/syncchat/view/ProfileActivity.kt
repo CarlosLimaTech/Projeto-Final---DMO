@@ -39,6 +39,10 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         loadUserProfile()
+
+        binding.btnBack.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     private fun loadUserProfile() {

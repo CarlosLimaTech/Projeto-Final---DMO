@@ -4,22 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@color/backgroundColor"
     tools:context=".view.AllConversationsActivity">
 
+    <!-- Caixa de busca com bordas arredondadas -->
     <EditText
         android:id="@+id/searchEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/search_user"
+        android:background="@drawable/search_input_background"
         android:padding="16dp"
+        android:drawableStart="@drawable/ic_search"
+        android:drawablePadding="8dp"
+        android:textColor="@color/primaryTextColor"
+        android:textColorHint="@color/secondaryTextColor"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/profileIcon"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="16dp"
-        android:inputType="text"/>
+        android:inputType="text" />
 
+    <!-- Ícone de perfil ajustado para interatividade -->
     <ImageView
         android:id="@+id/profileIcon"
         android:layout_width="48dp"
@@ -31,8 +40,10 @@
         android:layout_marginTop="16dp"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="onProfileIconClicked"/>
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:onClick="onProfileIconClicked" />
 
+    <!-- RecyclerView para exibição de conversas -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/conversationsRecyclerView"
         android:layout_width="0dp"
@@ -42,6 +53,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:listitem="@layout/item_conversation" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

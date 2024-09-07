@@ -4,42 +4,89 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@color/backgroundColor"
     tools:context=".view.MainActivity">
 
+    <!-- Texto de Boas-vindas -->
     <TextView
         android:id="@+id/welcomeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Bem-vindo!"
-        android:textSize="24sp"
+        android:textSize="28sp"
         android:textStyle="bold"
+        android:textColor="@color/primaryColor"
+        android:fontFamily="sans-serif-medium"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/loginButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="64dp" />
+
+    <!-- Texto "Já tem cadastro?" -->
+    <TextView
+        android:id="@+id/alreadyHaveAccountTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Já tem cadastro?"
+        android:textSize="18sp"
+        android:textColor="@color/primaryColor"
+        android:fontFamily="sans-serif"
+        app:layout_constraintTop_toBottomOf="@id/welcomeTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="32dp" />
 
+    <!-- Botão de Login -->
     <Button
         android:id="@+id/loginButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Já tem cadastro? Faça o login"
-        app:layout_constraintTop_toBottomOf="@+id/welcomeTextView"
+        android:text="Faça o login"
+        android:backgroundTint="@color/primaryColor"
+        android:textColor="@color/white"
+        android:fontFamily="sans-serif"
+        android:textSize="16sp"
+        android:padding="12dp"
+        android:layout_marginTop="16dp"
+        app:cornerRadius="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/alreadyHaveAccountTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp" />
 
+    <!-- Texto "Não tem cadastro?" -->
+    <TextView
+        android:id="@+id/dontHaveAccountTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Não tem cadastro?"
+        android:textSize="18sp"
+        android:textColor="@color/primaryColor"
+        android:fontFamily="sans-serif"
+        app:layout_constraintTop_toBottomOf="@id/loginButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp" />
+
+    <!-- Botão de Registro -->
     <Button
         android:id="@+id/registerButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Não tem cadastro? Registre-se agora"
-        app:layout_constraintTop_toBottomOf="@+id/loginButton"
+        android:text="Registre-se agora"
+        android:backgroundTint="@color/secondaryColor"
+        android:textColor="@color/white"
+        android:fontFamily="sans-serif"
+        android:textSize="16sp"
+        android:padding="12dp"
+        android:layout_marginTop="16dp"
+        app:cornerRadius="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/dontHaveAccountTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
