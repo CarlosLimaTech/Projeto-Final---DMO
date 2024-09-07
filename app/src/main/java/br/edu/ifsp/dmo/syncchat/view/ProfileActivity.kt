@@ -1,6 +1,8 @@
 package br.edu.ifsp.dmo.syncchat.view
 
 import android.content.DialogInterface
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.Toast
@@ -16,11 +18,15 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProfileBinding
     private lateinit var userRepository: UserRepository
     private var currentUser: User? = null
+    private lateinit var sharedPreferences: SharedPreferences  // Variável para SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Inicializando SharedPreferences
+        sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
 
         userRepository = UserRepository()
 
@@ -28,11 +34,15 @@ class ProfileActivity : AppCompatActivity() {
             changePassword()
         }
 
+        binding.btnLogout.setOnClickListener {
+            logoutUser()
+        }
+
         loadUserProfile()
     }
 
     private fun loadUserProfile() {
-        val userId = getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getString("userId", null)
+        val userId = sharedPreferences.getString("userId", null)
         userId?.let {
             userRepository.getUserById(it).addOnCompleteListener(OnCompleteListener { task ->
                 if (task.isSuccessful && task.result != null) {
@@ -90,5 +100,17 @@ class ProfileActivity : AppCompatActivity() {
                 }
             }
         } ?: Toast.makeText(this, "Erro: usuário não encontrado", Toast.LENGTH_LONG).show()
+    }
+
+    private fun logoutUser() {
+        // Limpa o SharedPreferences removendo o userId
+        val editor = sharedPreferences.edit()
+        editor.remove("userId")
+        editor.apply()
+
+        // Redireciona para a LoginActivity
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()  // Fecha a ProfileActivity
     }
 }

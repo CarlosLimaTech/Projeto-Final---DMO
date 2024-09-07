@@ -22,6 +22,9 @@ class LoginActivity : AppCompatActivity() {
         sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
         userRepository = UserRepository()
 
+        // Verifica se o usuário já está logado
+        checkIfUserIsLoggedIn()
+
         // Login de usuário
         binding.loginButton.setOnClickListener {
             val prontuario = binding.prontuarioEditText.text.toString()
@@ -44,6 +47,17 @@ class LoginActivity : AppCompatActivity() {
                     Snackbar.make(binding.root, "Erro ao realizar login", Snackbar.LENGTH_LONG).show()
                 }
             }
+        }
+    }
+
+    // Verifica se o userId já está no SharedPreferences
+    private fun checkIfUserIsLoggedIn() {
+        val userId = sharedPreferences.getString("userId", null)
+        if (userId != null) {
+            // Redireciona para AllConversationsActivity se o usuário já estiver logado
+            val intent = Intent(this, AllConversationsActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 }
