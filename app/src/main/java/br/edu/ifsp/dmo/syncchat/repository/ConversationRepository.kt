@@ -13,7 +13,7 @@ class ConversationRepository {
     fun getAllConversations(userId: String, onConversationsChanged: (List<Conversation>) -> Unit): ListenerRegistration {
         val conversationsList = mutableListOf<Conversation>()
 
-        // Listener para conversas onde userId é user1Id ou user2Id
+        // Listener para conversas onde userId é user1Id
         val listener1 = db.collection("conversations")
             .whereEqualTo("user1Id", userId)
             .addSnapshotListener { snapshots, e ->
@@ -22,6 +22,7 @@ class ConversationRepository {
                     return@addSnapshotListener
                 }
 
+                // Limpa a lista e adiciona novos dados
                 conversationsList.clear()
                 snapshots?.toObjects(Conversation::class.java)?.let {
                     conversationsList.addAll(it)
@@ -40,12 +41,15 @@ class ConversationRepository {
                             conversationsList.addAll(it)
                         }
 
-                        onConversationsChanged(conversationsList)
+                        // Organiza a lista consolidada de conversas por timestamp descrescente antes de passar ao callback
+                        val sortedConversations = conversationsList.sortedByDescending { it.lastMessageTimestamp }
+                        onConversationsChanged(sortedConversations)
                     }
             }
 
-        return listener1 // Retornando o primeiro listener (para evitar memory leaks)
+        return listener1 // Retorna o primeiro listener para manter o registro ativo e evitar memory leaks
     }
+
 
     fun findOrCreateConversation(user1Id: String, user2Id: String): Task<Conversation> {
         val taskCompletionSource = TaskCompletionSource<Conversation>()
