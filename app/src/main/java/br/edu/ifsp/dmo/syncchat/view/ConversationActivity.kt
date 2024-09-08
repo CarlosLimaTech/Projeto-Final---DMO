@@ -19,7 +19,6 @@ class ConversationActivity : AppCompatActivity() {
     private lateinit var userProntuario: String
     private lateinit var receiverId: String // ID do destinatário
     private lateinit var currentUserId: String // ID do usuário logado
-    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,7 +83,7 @@ class ConversationActivity : AppCompatActivity() {
     }
 
     private fun checkAndSendMessage(messageData: HashMap<String, Any>) {
-        val conversationRef = db.collection("conversations").document(conversationId)
+        val conversationRef = FirebaseFirestore.getInstance().collection("conversations").document(conversationId)
         conversationRef.get().addOnSuccessListener { document ->
             if (document.exists()) {
                 sendMessage(messageData) // Se a conversa já existe, apenas envie a mensagem
@@ -105,7 +104,7 @@ class ConversationActivity : AppCompatActivity() {
             "lastMessageTimestamp" to (messageData["timestamp"] ?: System.currentTimeMillis()) // Uso de Elvis operator
         )
 
-        db.collection("conversations").document(conversationId)
+        FirebaseFirestore.getInstance().collection("conversations").document(conversationId)
             .set(newConversation)
             .addOnSuccessListener {
                 sendMessage(messageData)
