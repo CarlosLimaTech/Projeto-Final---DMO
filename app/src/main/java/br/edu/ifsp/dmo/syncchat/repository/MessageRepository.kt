@@ -1,7 +1,9 @@
 package br.edu.ifsp.dmo.syncchat.repository
 
+import br.edu.ifsp.dmo.syncchat.model.Message
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.Query
 
 class MessageRepository {
 
@@ -46,5 +48,21 @@ class MessageRepository {
 
     private fun getConversationId(user1Id: String, user2Id: String): String {
         return if (user1Id < user2Id) "$user1Id-$user2Id" else "$user2Id-$user1Id"
+    }
+
+    fun listenForMessages(conversationId: String, onMessagesReceived: (List<Message>) -> Unit) {
+        db.collection("conversations").document(conversationId)
+            .collection("messages").orderBy("timestamp", Query.Direction.ASCENDING)
+            .addSnapshotListener { snapshots, e ->
+                if (e != null) {
+                    println("Listen failed: $e")
+                    return@addSnapshotListener
+                }
+
+                val messages = snapshots?.mapNotNull { doc ->
+                    doc.toObject(Message::class.java)
+                }
+                onMessagesReceived(messages ?: emptyList())
+            }
     }
 }

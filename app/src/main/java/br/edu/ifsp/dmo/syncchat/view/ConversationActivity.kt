@@ -2,7 +2,6 @@ package br.edu.ifsp.dmo.syncchat.view
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Message
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -48,7 +47,8 @@ class ConversationActivity : AppCompatActivity() {
         binding.userNameTextView.text = userName
         binding.userProntuarioTextView.text = userProntuario
 
-        loadMessages()
+        // Setup messages listener
+        setupMessagesListener()
 
         binding.sendMessageButton.setOnClickListener {
             val messageContent = binding.messageEditText.text.toString()
@@ -64,29 +64,24 @@ class ConversationActivity : AppCompatActivity() {
                 Toast.makeText(this, "Mensagem vazia. Digite algo para enviar.", Toast.LENGTH_SHORT).show()
             }
         }
+
+        binding.backButton.setOnClickListener {
+            finish()  // Encerra a atividade atual
+        }
     }
 
     private fun generateConversationId(user1Id: String, user2Id: String): String {
         return if (user1Id < user2Id) "$user1Id-$user2Id" else "$user2Id-$user1Id"
     }
 
-    private fun loadMessages() {
-        messageRepository.getMessages(conversationId).addOnSuccessListener { result ->
-            val messages = result.map { document ->
-                br.edu.ifsp.dmo.syncchat.model.Message(
-                    id = document["id"] as? String ?: "",
-                    senderId = document["senderId"] as? String ?: "",
-                    receiverId = document["receiverId"] as? String ?: "",
-                    content = document["content"] as? String ?: "",
-                    timestamp = document["timestamp"] as? Long ?: 0L
-                )
-            }
+    private fun setupMessagesListener() {
+        messageRepository.listenForMessages(conversationId) { messages ->
             messageAdapter.updateMessages(messages)
-        }.addOnFailureListener {
-            Toast.makeText(this, "Erro ao carregar mensagens", Toast.LENGTH_SHORT).show()
+            if (messages.isNotEmpty()) {
+                binding.messageRecyclerView.scrollToPosition(messages.size - 1)
+            }
         }
     }
-
 
     private fun checkAndSendMessage(messageData: HashMap<String, Any>) {
         val conversationRef = db.collection("conversations").document(conversationId)
@@ -104,10 +99,10 @@ class ConversationActivity : AppCompatActivity() {
     private fun createNewConversationAndSendMessage(messageData: HashMap<String, Any>) {
         val newConversation = hashMapOf<String, Any>(
             "id" to conversationId,
-            "user1Id" to (messageData["senderId"] ?: ""),  // Fornecendo um valor padrão para evitar null
-            "user2Id" to (messageData["receiverId"] ?: ""), // Fornecendo um valor padrão para evitar null
-            "lastMessage" to (messageData["content"] ?: ""), // Fornecendo um valor padrão para evitar null
-            "lastMessageTimestamp" to (messageData["timestamp"] ?: System.currentTimeMillis()) // Fornecendo timestamp padrão
+            "user1Id" to (messageData["senderId"] ?: ""),  // Uso de Elvis operator para garantir não-null
+            "user2Id" to (messageData["receiverId"] ?: ""), // Uso de Elvis operator para garantir não-null
+            "lastMessage" to (messageData["content"] ?: ""), // Uso de Elvis operator para garantir não-null
+            "lastMessageTimestamp" to (messageData["timestamp"] ?: System.currentTimeMillis()) // Uso de Elvis operator
         )
 
         db.collection("conversations").document(conversationId)
@@ -120,11 +115,10 @@ class ConversationActivity : AppCompatActivity() {
             }
     }
 
-
     private fun sendMessage(messageData: HashMap<String, Any>) {
         messageRepository.sendMessage(messageData).addOnSuccessListener {
             binding.messageEditText.text.clear()
-            loadMessages() // Recarregar as mensagens após o envio
+            // Atualizações são gerenciadas pelo listener agora
         }.addOnFailureListener {
             Toast.makeText(this, "Erro ao enviar mensagem", Toast.LENGTH_SHORT).show()
         }
