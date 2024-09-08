@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ConversationAdapter(
-    private var conversations: List<Conversation>,
+    private var conversations: MutableList<Conversation>,
     private val onConversationClick: (Conversation) -> Unit
 ) : RecyclerView.Adapter<ConversationAdapter.ConversationViewHolder>() {
 
@@ -35,7 +35,10 @@ class ConversationAdapter(
     override fun getItemCount(): Int = conversations.size
 
     fun updateConversations(newConversations: List<Conversation>) {
-        conversations = newConversations
+        // Remover duplicatas antes de atualizar a lista
+        val distinctConversations = newConversations.distinctBy { it.id }
+        conversations.clear()
+        conversations.addAll(distinctConversations)
         notifyDataSetChanged()
     }
 

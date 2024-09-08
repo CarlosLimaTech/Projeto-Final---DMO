@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -38,9 +37,10 @@ class AllConversationsActivity : AppCompatActivity() {
         userRepository = UserRepository()
 
         binding.conversationsRecyclerView.layoutManager = LinearLayoutManager(this)
-        conversationAdapter = ConversationAdapter(emptyList()) { conversation ->
+        conversationAdapter = ConversationAdapter(mutableListOf()) { conversation ->
             openConversation(conversation)
         }
+
         binding.conversationsRecyclerView.adapter = conversationAdapter
 
         loadConversations()
@@ -72,10 +72,13 @@ class AllConversationsActivity : AppCompatActivity() {
 
     private fun loadConversations() {
         if (currentUserId.isNotEmpty()) {
+            // Remover o listener anterior para evitar duplicação
+            listenerRegistration?.remove()
             listenerRegistration = conversationRepository.getAllConversations(currentUserId) { conversations ->
                 if (conversations.isEmpty()) {
                     Toast.makeText(this, "Nenhuma conversa encontrada.", Toast.LENGTH_LONG).show()
                 } else {
+                    // Atualiza a lista sem duplicar
                     conversationAdapter.updateConversations(conversations)
                 }
             }
@@ -91,7 +94,7 @@ class AllConversationsActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        listenerRegistration?.remove()
+        listenerRegistration?.remove() // Remove o listener ao destruir a atividade
     }
 
     private fun openConversation(conversation: Conversation) {

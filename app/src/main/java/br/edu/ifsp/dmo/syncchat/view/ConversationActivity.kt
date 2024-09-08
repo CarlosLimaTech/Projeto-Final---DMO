@@ -26,47 +26,69 @@ class ConversationActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         messageRepository = MessageRepository()
+        currentUserId = getCurrentUserId()
 
-        // Obtendo o ID do usuário logado de SharedPreferences
-        val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
-        currentUserId = sharedPreferences.getString("userId", "") ?: ""
-
-        // Recuperando o ID da conversa, nome e prontuário do usuário a partir do Intent
-        receiverId = intent.getStringExtra("receiverId") ?: "defaultReceiverId"
-        conversationId = generateConversationId(currentUserId, receiverId)
-        userName = intent.getStringExtra("userName") ?: "Nome desconhecido"
-        userProntuario = intent.getStringExtra("userProntuario") ?: "Prontuário desconhecido"
-
-        // Configurando o RecyclerView
-        binding.messageRecyclerView.layoutManager = LinearLayoutManager(this)
-        messageAdapter = MessageAdapter(emptyList(), currentUserId)
-        binding.messageRecyclerView.adapter = messageAdapter
-
-        // Exibindo o nome e o prontuário do outro usuário
-        binding.userNameTextView.text = userName
-        binding.userProntuarioTextView.text = userProntuario
-
-        // Setup messages listener
-        setupMessagesListener()
+        setupRecyclerView()
+        retrieveIntentData()
 
         binding.sendMessageButton.setOnClickListener {
             val messageContent = binding.messageEditText.text.toString()
-            if (messageContent.isNotEmpty()) {
-                val messageData = hashMapOf<String, Any>(
-                    "senderId" to currentUserId,
-                    "receiverId" to receiverId,
-                    "content" to messageContent,
-                    "timestamp" to System.currentTimeMillis()
-                )
-                checkAndSendMessage(messageData)
-            } else {
-                Toast.makeText(this, "Mensagem vazia. Digite algo para enviar.", Toast.LENGTH_SHORT).show()
-            }
+            sendMessageIfValid(messageContent)
         }
 
         binding.backButton.setOnClickListener {
             finish()  // Encerra a atividade atual
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setupMessagesListener()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        messageRepository.removeListener()
+    }
+
+    private fun getCurrentUserId(): String {
+        val sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("userId", "") ?: ""
+    }
+
+    private fun setupRecyclerView() {
+        messageAdapter = MessageAdapter(emptyList(), currentUserId)
+        binding.messageRecyclerView.apply {
+            layoutManager = LinearLayoutManager(this@ConversationActivity)
+            adapter = messageAdapter
+        }
+    }
+
+    private fun retrieveIntentData() {
+        receiverId = intent.getStringExtra("receiverId") ?: "defaultReceiverId"
+        conversationId = generateConversationId(currentUserId, receiverId)
+        userName = intent.getStringExtra("userName") ?: "Nome desconhecido"
+        userProntuario = intent.getStringExtra("userProntuario") ?: "Prontuário desconhecido"
+        binding.userNameTextView.text = userName
+        binding.userProntuarioTextView.text = userProntuario
+    }
+
+    private fun sendMessageIfValid(messageContent: String) {
+        if (messageContent.isNotEmpty()) {
+            val messageData = createMessageData(messageContent)
+            checkAndSendMessage(messageData)
+        } else {
+            Toast.makeText(this, "Mensagem vazia. Digite algo para enviar.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun createMessageData(messageContent: String): HashMap<String, Any> {
+        return hashMapOf(
+            "senderId" to currentUserId,
+            "receiverId" to receiverId,
+            "content" to messageContent,
+            "timestamp" to System.currentTimeMillis()
+        )
     }
 
     private fun generateConversationId(user1Id: String, user2Id: String): String {
@@ -96,7 +118,7 @@ class ConversationActivity : AppCompatActivity() {
     }
 
     private fun createNewConversationAndSendMessage(messageData: HashMap<String, Any>) {
-        val newConversation = hashMapOf<String, Any>(
+        val newConversation = hashMapOf(
             "id" to conversationId,
             "user1Id" to (messageData["senderId"] ?: ""),  // Uso de Elvis operator para garantir não-null
             "user2Id" to (messageData["receiverId"] ?: ""), // Uso de Elvis operator para garantir não-null

@@ -1,13 +1,15 @@
 package br.edu.ifsp.dmo.syncchat.repository
 
 import br.edu.ifsp.dmo.syncchat.model.Message
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 
 class MessageRepository {
 
     private val db = FirebaseFirestore.getInstance()
+    private var messageListener: ListenerRegistration? = null
 
     fun sendMessage(messageData: HashMap<String, Any>): Task<Void> {
         val conversationId = getConversationId(messageData["senderId"] as String, messageData["receiverId"] as String)
@@ -51,7 +53,8 @@ class MessageRepository {
     }
 
     fun listenForMessages(conversationId: String, onMessagesReceived: (List<Message>) -> Unit) {
-        db.collection("conversations").document(conversationId)
+        removeListener()  // Remove existing listener if there is one
+        messageListener = db.collection("conversations").document(conversationId)
             .collection("messages").orderBy("timestamp", Query.Direction.ASCENDING)
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
@@ -64,5 +67,10 @@ class MessageRepository {
                 }
                 onMessagesReceived(messages ?: emptyList())
             }
+    }
+
+    fun removeListener() {
+        messageListener?.remove()
+        messageListener = null
     }
 }
