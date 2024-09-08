@@ -8,7 +8,14 @@ class UserViewModel : ViewModel() {
 
     private val userRepository = UserRepository()
 
-    fun registerUser(user: User) = userRepository.registerUser(user)
+    // Agora extraímos os parâmetros do objeto User e passamos para o repositório
+    fun registerUser(user: User) {
+        userRepository.registerUser(
+            username = user.prontuario, // Usando o prontuário como o username
+            name = user.nome,
+            password = (user.senha) // Certifique-se de que senha seja um número válido
+        )
+    }
 
     fun loginUser(prontuario: String, senha: String) = userRepository.loginUser(prontuario, senha)
 }

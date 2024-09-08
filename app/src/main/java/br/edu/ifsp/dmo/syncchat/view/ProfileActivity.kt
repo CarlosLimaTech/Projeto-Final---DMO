@@ -93,10 +93,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun updatePassword(newPassword: String) {
         currentUser?.let {
-            it.senha = newPassword  // Atualiza o campo de senha no objeto User
-
-            // Chama o UserRepository para atualizar a senha no banco de dados
-            userRepository.updateUserPassword(it).addOnCompleteListener { task ->
+            userRepository.updateUserPassword(it.id, newPassword).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "Senha alterada com sucesso", Toast.LENGTH_LONG).show()
                 } else {

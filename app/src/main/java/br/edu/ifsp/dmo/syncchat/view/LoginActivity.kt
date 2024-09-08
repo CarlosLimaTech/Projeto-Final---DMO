@@ -29,23 +29,30 @@ class LoginActivity : AppCompatActivity() {
         binding.loginButton.setOnClickListener {
             val prontuario = binding.prontuarioEditText.text.toString()
             val senha = binding.passwordEditText.text.toString()
-            userRepository.loginUser(prontuario, senha).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val user = task.result
-                    if (user != null) {
-                        // Armazena o userId no SharedPreferences
-                        val editor = sharedPreferences.edit()
-                        editor.putString("userId", user.id)
-                        editor.apply()
 
-                        Toast.makeText(this, "Login realizado com sucesso", Toast.LENGTH_LONG).show()
-                        val intent = Intent(this, AllConversationsActivity::class.java)
-                        startActivity(intent)
-                        finish()
+            if (prontuario.isNotEmpty() && senha.isNotEmpty()) {
+                userRepository.loginUser(prontuario, senha).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val user = task.result
+                        if (user != null) {
+                            // Armazena o userId no SharedPreferences
+                            val editor = sharedPreferences.edit()
+                            editor.putString("userId", user.id)
+                            editor.apply()
+
+                            Toast.makeText(this, "Login realizado com sucesso", Toast.LENGTH_LONG).show()
+                            val intent = Intent(this, AllConversationsActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            Toast.makeText(this, "Usuário ou senha inválidos", Toast.LENGTH_LONG).show()
+                        }
+                    } else {
+                        Toast.makeText(this, "Erro ao realizar login", Toast.LENGTH_LONG).show()
                     }
-                } else {
-                    Toast.makeText(this, "Erro ao realizar login", Toast.LENGTH_LONG).show()
                 }
+            } else {
+                Toast.makeText(this, "Por favor, preencha todos os campos.", Toast.LENGTH_LONG).show()
             }
         }
     }

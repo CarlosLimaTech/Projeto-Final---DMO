@@ -21,21 +21,30 @@ class RegisterActivity : AppCompatActivity() {
         userRepository = UserRepository()
 
         binding.registerButton.setOnClickListener {
-            val user = User(
-                nome = binding.nameEditText.text.toString(),
-                prontuario = binding.prontuarioEditText.text.toString(),
-                senha = binding.passwordEditText.text.toString()
-            )
+            val nome = binding.nameEditText.text.toString()
+            val prontuario = binding.prontuarioEditText.text.toString()
+            val senha = binding.passwordEditText.text.toString()
 
-            userRepository.registerUser(user).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(this, "Registro realizado com sucesso", Toast.LENGTH_LONG).show()
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    finish() // Fecha a tela de registro
-                } else {
-                    Toast.makeText(this, "Erro ao registrar usuário", Toast.LENGTH_LONG).show()
+            if (nome.isNotEmpty() && prontuario.isNotEmpty() && senha.isNotEmpty()) {
+                val user = User(
+                    nome = nome,
+                    prontuario = prontuario,
+                    senha = senha
+                )
+
+                // Agora chamamos o método correto para registrar o usuário
+                userRepository.registerUser(user.nome, user.prontuario, user.senha).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(this, "Registro realizado com sucesso", Toast.LENGTH_LONG).show()
+                        val intent = Intent(this, MainActivity::class.java)
+                        startActivity(intent)
+                        finish() // Fecha a tela de registro
+                    } else {
+                        Toast.makeText(this, "Erro ao registrar usuário", Toast.LENGTH_LONG).show()
+                    }
                 }
+            } else {
+                Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_LONG).show()
             }
         }
     }

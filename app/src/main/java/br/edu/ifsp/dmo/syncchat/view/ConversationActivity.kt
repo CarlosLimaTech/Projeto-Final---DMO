@@ -2,13 +2,11 @@ package br.edu.ifsp.dmo.syncchat.view
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
+import android.os.Message
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.edu.ifsp.dmo.syncchat.databinding.ActivityConversationBinding
-import br.edu.ifsp.dmo.syncchat.model.Message
-import br.edu.ifsp.dmo.syncchat.model.Conversation
 import br.edu.ifsp.dmo.syncchat.repository.MessageRepository
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -36,7 +34,7 @@ class ConversationActivity : AppCompatActivity() {
         currentUserId = sharedPreferences.getString("userId", "") ?: ""
 
         // Recuperando o ID da conversa, nome e prontuário do usuário a partir do Intent
-        receiverId = intent.getStringExtra("receiverId") ?: "defaultReceiverId" // Obtém o ID do destinatário
+        receiverId = intent.getStringExtra("receiverId") ?: "defaultReceiverId"
         conversationId = generateConversationId(currentUserId, receiverId)
         userName = intent.getStringExtra("userName") ?: "Nome desconhecido"
         userProntuario = intent.getStringExtra("userProntuario") ?: "Prontuário desconhecido"
@@ -50,22 +48,18 @@ class ConversationActivity : AppCompatActivity() {
         binding.userNameTextView.text = userName
         binding.userProntuarioTextView.text = userProntuario
 
-        // Configurando o botão de voltar
-        binding.backButton.setOnClickListener {
-            finish()
-        }
-
         loadMessages()
 
         binding.sendMessageButton.setOnClickListener {
             val messageContent = binding.messageEditText.text.toString()
             if (messageContent.isNotEmpty()) {
-                val message = Message(
-                    senderId = currentUserId,  // ID do usuário logado
-                    receiverId = receiverId,  // ID do destinatário
-                    content = messageContent
+                val messageData = hashMapOf<String, Any>(
+                    "senderId" to currentUserId,
+                    "receiverId" to receiverId,
+                    "content" to messageContent,
+                    "timestamp" to System.currentTimeMillis()
                 )
-                checkAndSendMessage(message)
+                checkAndSendMessage(messageData)
             } else {
                 Toast.makeText(this, "Mensagem vazia. Digite algo para enviar.", Toast.LENGTH_SHORT).show()
             }
@@ -73,66 +67,66 @@ class ConversationActivity : AppCompatActivity() {
     }
 
     private fun generateConversationId(user1Id: String, user2Id: String): String {
-        return if (user1Id < user2Id) {
-            "$user1Id-$user2Id"
-        } else {
-            "$user2Id-$user1Id"
-        }
+        return if (user1Id < user2Id) "$user1Id-$user2Id" else "$user2Id-$user1Id"
     }
 
     private fun loadMessages() {
-        messageRepository.getMessages(conversationId).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val messages = task.result ?: emptyList()
-                messageAdapter.updateMessages(messages)
-            } else {
-                Toast.makeText(this, "Erro ao carregar mensagens", Toast.LENGTH_SHORT).show()
+        messageRepository.getMessages(conversationId).addOnSuccessListener { result ->
+            val messages = result.map { document ->
+                br.edu.ifsp.dmo.syncchat.model.Message(
+                    id = document["id"] as? String ?: "",
+                    senderId = document["senderId"] as? String ?: "",
+                    receiverId = document["receiverId"] as? String ?: "",
+                    content = document["content"] as? String ?: "",
+                    timestamp = document["timestamp"] as? Long ?: 0L
+                )
             }
+            messageAdapter.updateMessages(messages)
+        }.addOnFailureListener {
+            Toast.makeText(this, "Erro ao carregar mensagens", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun checkAndSendMessage(message: Message) {
+
+    private fun checkAndSendMessage(messageData: HashMap<String, Any>) {
         val conversationRef = db.collection("conversations").document(conversationId)
         conversationRef.get().addOnSuccessListener { document ->
             if (document.exists()) {
-                sendMessage(message) // Se a conversa já existe, apenas envie a mensagem
+                sendMessage(messageData) // Se a conversa já existe, apenas envie a mensagem
             } else {
-                createNewConversationAndSendMessage(message) // Crie uma nova conversa e envie a mensagem
+                createNewConversationAndSendMessage(messageData) // Crie uma nova conversa e envie a mensagem
             }
         }.addOnFailureListener {
             Toast.makeText(this, "Erro ao verificar conversa existente", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun createNewConversationAndSendMessage(message: Message) {
-        val newConversation = Conversation(
-            id = conversationId,
-            user1Id = currentUserId,
-            user2Id = receiverId,
-            lastMessage = message.content,
-            lastMessageTimestamp = System.currentTimeMillis()
+    private fun createNewConversationAndSendMessage(messageData: HashMap<String, Any>) {
+        val newConversation = hashMapOf<String, Any>(
+            "id" to conversationId,
+            "user1Id" to (messageData["senderId"] ?: ""),  // Fornecendo um valor padrão para evitar null
+            "user2Id" to (messageData["receiverId"] ?: ""), // Fornecendo um valor padrão para evitar null
+            "lastMessage" to (messageData["content"] ?: ""), // Fornecendo um valor padrão para evitar null
+            "lastMessageTimestamp" to (messageData["timestamp"] ?: System.currentTimeMillis()) // Fornecendo timestamp padrão
         )
 
         db.collection("conversations").document(conversationId)
             .set(newConversation)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    sendMessage(message)
-                } else {
-                    Toast.makeText(this, "Erro ao criar nova conversa", Toast.LENGTH_SHORT).show()
-                    Log.e("ConversationActivity", "Erro ao criar nova conversa: ${task.exception?.message}")
-                }
+            .addOnSuccessListener {
+                sendMessage(messageData)
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Erro ao criar nova conversa", Toast.LENGTH_SHORT).show()
             }
     }
 
-    private fun sendMessage(message: Message) {
-        messageRepository.sendMessage(message).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                binding.messageEditText.text.clear()
-                loadMessages() // Recarregar as mensagens após o envio
-            } else {
-                Toast.makeText(this, "Erro ao enviar mensagem", Toast.LENGTH_SHORT).show()
-            }
+
+    private fun sendMessage(messageData: HashMap<String, Any>) {
+        messageRepository.sendMessage(messageData).addOnSuccessListener {
+            binding.messageEditText.text.clear()
+            loadMessages() // Recarregar as mensagens após o envio
+        }.addOnFailureListener {
+            Toast.makeText(this, "Erro ao enviar mensagem", Toast.LENGTH_SHORT).show()
         }
     }
 }
