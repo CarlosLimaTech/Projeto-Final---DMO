@@ -20,3 +20,4 @@ O SyncChat foi criado para ser um aplicativo de troca de mensagens. Entre as fun
   OBS - Ele funciona para android acima do do android 14
 
   Se quiser utilizar ele pelo AndroidStudio, você precisará pegar o link do prpjeto e importa-lo usando a função integrado do github
+https://github.com/CarlosLimaTech/Projeto-Final-DMO.git
