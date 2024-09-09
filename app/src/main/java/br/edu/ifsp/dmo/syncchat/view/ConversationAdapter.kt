@@ -35,7 +35,6 @@ class ConversationAdapter(
     override fun getItemCount(): Int = conversations.size
 
     fun updateConversations(newConversations: List<Conversation>) {
-        // Remover duplicatas antes de atualizar a lista
         val distinctConversations = newConversations.distinctBy { it.id }
         conversations.clear()
         conversations.addAll(distinctConversations)

@@ -37,7 +37,7 @@ class ConversationActivity : AppCompatActivity() {
         }
 
         binding.backButton.setOnClickListener {
-            finish()  // Encerra a atividade atual
+            finish()
         }
     }
 

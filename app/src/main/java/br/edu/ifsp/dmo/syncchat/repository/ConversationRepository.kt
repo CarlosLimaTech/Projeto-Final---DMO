@@ -18,7 +18,6 @@ class ConversationRepository {
             .whereEqualTo("user1Id", userId)
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
-                    // Handle the error
                     return@addSnapshotListener
                 }
 
@@ -33,7 +32,6 @@ class ConversationRepository {
                     .whereEqualTo("user2Id", userId)
                     .addSnapshotListener { snapshots2, e2 ->
                         if (e2 != null) {
-                            // Handle the error
                             return@addSnapshotListener
                         }
 

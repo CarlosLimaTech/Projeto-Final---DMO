@@ -32,7 +32,6 @@ class RegisterActivity : AppCompatActivity() {
                     senha = senha
                 )
 
-                // Agora chamamos o método correto para registrar o usuário
                 userRepository.registerUser(user.nome, user.prontuario, user.senha).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Toast.makeText(this, "Registro realizado com sucesso", Toast.LENGTH_LONG).show()

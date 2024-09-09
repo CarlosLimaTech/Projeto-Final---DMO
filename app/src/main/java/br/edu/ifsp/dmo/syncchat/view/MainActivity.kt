@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Usuário já logado", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, AllConversationsActivity::class.java)
             startActivity(intent)
-            finish()  // Finaliza a MainActivity para que o usuário não possa voltar para ela
+            finish()
         } else {
             Toast.makeText(this, "Nenhum usuário logado", Toast.LENGTH_SHORT).show()
         }
