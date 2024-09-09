@@ -8,7 +8,6 @@
     android:background="@color/backgroundColor"
     tools:context=".view.LoginActivity">
 
-    <!-- Logo ou imagem de cabeçalho -->
     <ImageView
         android:id="@+id/logoImageView"
         android:layout_width="128dp"
@@ -20,7 +19,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/nameEditText" />
 
-    <!-- Campo de Nome (inicialmente oculto) -->
     <EditText
         android:id="@+id/nameEditText"
         android:layout_width="0dp"
@@ -37,7 +35,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp" />
 
-    <!-- Campo de Prontuário -->
     <EditText
         android:id="@+id/prontuarioEditText"
         android:layout_width="0dp"
@@ -53,7 +50,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp" />
 
-    <!-- Campo de Senha -->
     <EditText
         android:id="@+id/passwordEditText"
         android:layout_width="0dp"
@@ -70,7 +66,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp" />
 
-    <!-- Botão de Login -->
     <Button
         android:id="@+id/loginButton"
         android:layout_width="0dp"

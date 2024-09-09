@@ -6,7 +6,6 @@
     android:background="@color/backgroundColor"
     tools:context=".view.ConversationActivity">
 
-    <!-- Header layout for back button, name, and prontuario -->
     <LinearLayout
         android:id="@+id/headerLayout"
         android:layout_width="0dp"
@@ -18,7 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Voltar -->
         <ImageButton
             android:id="@+id/backButton"
             android:layout_width="44dp"
@@ -29,7 +27,6 @@
             android:src="@drawable/ic_back"
             app:tint="@android:color/white" />
 
-        <!-- Nome e prontuario -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -59,7 +56,6 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- RecyclerView for messages -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messageRecyclerView"
         android:layout_width="0dp"
@@ -73,7 +69,6 @@
         android:scrollbars="vertical"
         />
 
-    <!-- Message input layout -->
     <LinearLayout
         android:id="@+id/messageInputLayout"
         android:layout_width="0dp"
@@ -87,7 +82,6 @@
         android:background="@color/white"
         android:elevation="2dp">
 
-        <!-- Input for message -->
         <EditText
             android:id="@+id/messageEditText"
             android:layout_width="0dp"
@@ -102,7 +96,6 @@
             android:textColor="@color/black"
             android:textColorHint="@color/secondaryTextColor"/>
 
-        <!-- Send button -->
         <Button
             android:id="@+id/sendMessageButton"
             android:layout_width="wrap_content"

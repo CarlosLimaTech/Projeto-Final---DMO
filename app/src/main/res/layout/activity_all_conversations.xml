@@ -8,7 +8,6 @@
     android:background="@color/backgroundColor"
     tools:context=".view.AllConversationsActivity">
 
-    <!-- Caixa de busca com bordas arredondadas -->
     <EditText
         android:id="@+id/searchEditText"
         android:layout_width="0dp"
@@ -28,7 +27,6 @@
         android:layout_marginTop="16dp"
         android:inputType="text" />
 
-    <!-- Ícone de perfil ajustado para interatividade -->
     <ImageView
         android:id="@+id/profileIcon"
         android:layout_width="48dp"
@@ -43,7 +41,6 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:onClick="onProfileIconClicked" />
 
-    <!-- RecyclerView para exibição de conversas -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/conversationsRecyclerView"
         android:layout_width="0dp"

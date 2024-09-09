@@ -8,7 +8,6 @@
     android:background="@color/backgroundColor"
     tools:context=".view.ProfileActivity">
 
-    <!-- Botão de voltar -->
     <ImageView
         android:id="@+id/btnBack"
         android:layout_width="48dp"
@@ -22,7 +21,6 @@
         android:clickable="true"
         android:focusable="true" />
 
-    <!-- Título do perfil -->
     <TextView
         android:id="@+id/profileTitle"
         android:layout_width="0dp"
@@ -38,7 +36,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5" />
 
-    <!-- Nome do Usuário -->
     <TextView
         android:id="@+id/tvUserName"
         android:layout_width="wrap_content"
@@ -51,7 +48,6 @@
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"/>
 
-    <!-- Prontuário do Usuário -->
     <TextView
         android:id="@+id/tvUserProntuario"
         android:layout_width="wrap_content"
@@ -63,7 +59,6 @@
         app:layout_constraintStart_toStartOf="@id/tvUserName"
         android:layout_marginTop="8dp"/>
 
-    <!-- Botão Trocar Senha -->
     <Button
         android:id="@+id/btnChangePassword"
         android:layout_width="0dp"
@@ -78,7 +73,6 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"/>
 
-    <!-- Botão Sair -->
     <Button
         android:id="@+id/btnLogout"
         android:layout_width="0dp"

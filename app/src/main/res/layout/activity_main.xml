@@ -8,7 +8,6 @@
     android:background="@color/backgroundColor"
     tools:context=".view.MainActivity">
 
-    <!-- Texto de Boas-vindas -->
     <TextView
         android:id="@+id/welcomeTextView"
         android:layout_width="wrap_content"
@@ -23,7 +22,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="64dp" />
 
-    <!-- Texto "Já tem cadastro?" -->
     <TextView
         android:id="@+id/alreadyHaveAccountTextView"
         android:layout_width="wrap_content"
@@ -37,7 +35,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="32dp" />
 
-    <!-- Botão de Login -->
     <Button
         android:id="@+id/loginButton"
         android:layout_width="0dp"
@@ -56,7 +53,6 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp" />
 
-    <!-- Texto "Não tem cadastro?" -->
     <TextView
         android:id="@+id/dontHaveAccountTextView"
         android:layout_width="wrap_content"
@@ -70,7 +66,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="32dp" />
 
-    <!-- Botão de Registro -->
     <Button
         android:id="@+id/registerButton"
         android:layout_width="0dp"

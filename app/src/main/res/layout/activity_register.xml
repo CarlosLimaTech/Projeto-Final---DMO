@@ -8,7 +8,6 @@
     android:background="@color/backgroundColor"
     tools:context=".view.RegisterActivity">
 
-    <!-- Título de Registro -->
     <TextView
         android:id="@+id/registerTitle"
         android:layout_width="wrap_content"
@@ -23,7 +22,6 @@
         android:layout_marginTop="32dp"
         android:gravity="center" />
 
-    <!-- Campo Nome -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/nameInputLayout"
         android:layout_width="0dp"
@@ -43,7 +41,6 @@
             android:hint="Nome completo" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Campo Prontuário -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/prontuarioInputLayout"
         android:layout_width="0dp"
@@ -63,7 +60,6 @@
             android:hint="Digite seu prontuário" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Campo Senha -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passwordInputLayout"
         android:layout_width="0dp"
@@ -83,7 +79,6 @@
             android:hint="Digite sua senha" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Botão de Registro -->
     <Button
         android:id="@+id/registerButton"
         android:layout_width="0dp"
