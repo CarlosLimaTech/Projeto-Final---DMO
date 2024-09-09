@@ -15,7 +15,7 @@ O SyncChat foi criado para ser um aplicativo de troca de mensagens. Entre as fun
 - A imagem conversa indivisual mostra a conversa entre 2 usuario
 - A imagem perfil de usuario mostra os dados do usuario e botões para trocar a senha e sair do aplicativo
 
-  Para instalar ele no seu telefone, basta baixar o arquivo sync.apk
+  Para instalar ele no seu telefone, basta baixar o arquivo sync.apk disponivel no link https://drive.google.com/file/d/1EEgwu0UJDFTir4HVDRKq_zAcPzDwXCIR/view?usp=drive_link
 
   OBS - Ele funciona para android acima do do android 14
 
